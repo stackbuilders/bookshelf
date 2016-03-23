@@ -1,6 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
+----------------------------------------------------------------------
+-- |
+-- Module: Bookshelf
+--
+--
+-- A bookshelf.
+--
+-- Actually, books.
+--
+----------------------------------------------------------------------
+
 module Bookshelf
   ( Book(..)
   )
@@ -8,9 +19,19 @@ module Bookshelf
 
 -- aeson
 import Data.Aeson
+  ( (.:)
+  , (.=)
+  , FromJSON(parseJSON)
+  , object
+  , ToJSON(toJSON)
+  , withObject
+  )
 
 -- QuickCheck
 import Test.QuickCheck
+  ( Arbitrary(arbitrary)
+  , elements
+  )
 
 
 -- |
@@ -19,10 +40,19 @@ import Test.QuickCheck
 
 data Book =
   Book
-    { bookAuthor :: String
-    , bookTitle :: String
+    { bookAuthor :: String -- ^ The author.
+    , bookTitle :: String -- ^ The title.
     }
-  deriving (Eq, Show)
+  deriving Eq
+
+
+-- |
+--
+-- Show a book.
+
+instance Show Book where
+  show Book{..} =
+    bookTitle ++ " (" ++ bookAuthor ++ ")"
 
 
 -- |
@@ -59,7 +89,9 @@ instance Arbitrary Book where
     author <-
       elements
         [ "Charles Dickens"
+        , "Gabriel García Márquez"
         , "Harper Lee"
+        , "José Saramago"
         , "Lewis Carroll"
         , "Roald Dahl"
         ]
